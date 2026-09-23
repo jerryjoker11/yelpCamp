@@ -1,0 +1,70 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [develop, main]
+  push:
+    branches: [develop, main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  # The machine half of the definition of done. Gates run fast-to-slow so the
+  # cheapest signal arrives first; see §4.1 of the roadmap design.
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          # gitleaks scans history, which a shallow clone does not have.
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Build shared
+        run: npm run build:shared
+
+      - name: Type check
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Format
+        run: npm run format:check
+
+      - name: Unit + integration tests
+        run: npx vitest run --passWithNoTests
+
+      - name: Production build
+        run: npm run build
+
+      - name: Secret scan
+        run: |
+          curl -sSfL "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" \
+            | tar -xz -C /tmp gitleaks
+          /tmp/gitleaks git --redact --verbose .
+        env:
+          GITLEAKS_VERSION: 8.30.1
+
+      - name: Pending tests
+        # A milestone may not merge with its own test list unfinished. Scoped to
+        # workspace sources so this workflow file cannot match itself.
+        run: |
+          if grep -rnE '\b(it|test|describe)\.todo\b|\b(it|test|describe)\.only\(' \
+               --include='*.ts' --include='*.tsx' shared/src server/src client/src; then
+            echo "::error::Pending or focused tests found. Promote or remove them before merging."
+            exit 1
+          fi
+          echo "No pending or focused tests."

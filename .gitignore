@@ -2,6 +2,9 @@
 node_modules/
 
 # Build output
+shared/dist/
+server/dist/
+*.tsbuildinfo
 
 # Environment - .env.example stays tracked
 .env

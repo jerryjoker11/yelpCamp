@@ -6,7 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Architecture**
 - `./docs/` contains the overall design of the system.
-- `./docs/specs/` tracks the spec for each milestone, and is the source of truth for what that milestone must deliver.
+- `./docs/specs/` holds process and design documents — the reasoning behind how the project is built.
+- `./docs/milestones/` holds one file per milestone (`M<N>-<slug>.md`), and is the source of truth for what that milestone must deliver.
 
 **Conventions**
 - **Commits** follow https://graphite.com/guides/git-commit-message-best-practices — imperative subject under ~50 chars, no trailing period, a blank line, then a body explaining *why* rather than what.
@@ -33,7 +34,8 @@ This project was fully designed before implementation. Read the relevant documen
 | `docs/ERROR_HANDLING.md` | The twelve error classes and the complete `ErrorCode` catalogue with statuses |
 | `docs/AUTH.md` | Token design, revocation, and the login/refresh/Google/verification/reset flows |
 | `docs/ADR.md` | 16 accepted decisions with rejected alternatives. No open decisions — do not relitigate these |
-| `docs/specs/` | The process design, and one spec per milestone |
+| `docs/specs/` | The process design: the milestone ladder, the TDD loop, the CI gate table |
+| `docs/milestones/` | One file per milestone: goal, acceptance criteria, derived test list, out-of-scope |
 
 A change that contradicts a doc means updating the doc in the same change, or it is a bug.
 
@@ -42,7 +44,7 @@ A change that contradicts a doc means updating the doc in the same change, or it
 Defined in `docs/specs/2026-09-22-roadmap-and-tdd-workflow-design.md`. Summary:
 
 - **Milestones M0–M9**, each a vertical slice (shared types → server route → tests → UI), one branch off `develop`, one in progress at a time. Order is dependency-driven: skeleton → read path → auth → writes → reviews → images → profiles → email → Google → hardening.
-- **A milestone starts by writing its spec** in `docs/specs/`: goal, acceptance criteria with IDs (`M3-AC-03`), derived test list, out-of-scope. It is frozen when the milestone merges, so it records intent rather than drifting into a stale claim about current behaviour.
+- **A milestone starts by writing its milestone file** in `docs/milestones/M<N>-<slug>.md`: goal, acceptance criteria with IDs (`M3-AC-03`), derived test list, out-of-scope. It is frozen when the milestone merges, so it records intent rather than drifting into a stale claim about current behaviour.
 - **Test-first on the server**, pragmatic on the client. The test list is *transcribed* from the `API.md` rows and the error catalogue, not invented. Write it as `it.todo` before implementing, promote one at a time, and confirm each test fails for the right reason before making it pass. Tests cite the criterion ID in their name.
 - **`docs/ROADMAP.md`** (milestone index) and **`docs/WORKFLOW.md`** (definition of done, CI gates) are created in M0.
 - Commits are small and green. `develop` is always deployable.

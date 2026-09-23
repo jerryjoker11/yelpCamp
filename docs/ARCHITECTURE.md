@@ -10,6 +10,9 @@ Capstone Project known as YelpCamp, where users can review camps. Users can own 
 | [AUTH.md](./AUTH.md) | Tokens, revocation, and the login, refresh, Google, verification, and reset flows |
 | [ERROR_HANDLING.md](./ERROR_HANDLING.md) | Every error class, response, and error code |
 | [ADR.md](./ADR.md) | Decisions and the alternatives rejected, plus what's still open |
+| [ROADMAP.md](./ROADMAP.md) | The milestone index: one checkbox per milestone, each linking to its file |
+| [WORKFLOW.md](./WORKFLOW.md) | Branch strategy, the definition of done, the CI gate table, branch protection |
+| [milestones/](./milestones/) | One file per milestone: goal, acceptance criteria, derived test list, out-of-scope |
 
 # Tech Stack
 **Languages**: TypeScript, CSS

@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+
+# Build output
+
+# Environment - .env.example stays tracked
+.env
+.env.*
+!.env.example
+
+# Test output
+coverage/
+playwright-report/
+test-results/
+blob-report/
+.playwright/
+
+# Vite
+.vite/
+client/dist
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editors/OS
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json

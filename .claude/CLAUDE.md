@@ -90,6 +90,8 @@ Three-tier, two deployables, JSON only under `/api` — the API never returns HT
 
 **Error responses have exactly one shape:** `{ error: { code, message, details? } }`, produced by the central error handler. Adding a code means adding it to the `ErrorCode` union and the catalogue in `docs/ERROR_HANDLING.md`; renaming one is a breaking API change.
 
+**Success responses mirror it:** `{ message, data }` (`Single<T>`) or `{ message, data, meta }` (`Paginated<T>`); `204` has no body, and the status is never repeated in the body.
+
 ## Other constraints
 
 - `.env` is gitignored; `.env.example` carries every key with no values. Nothing reads `process.env` directly — env is parsed through a Zod schema in `config/env.ts` at boot and fails fast.

@@ -10,6 +10,9 @@ Capstone Project known as YelpCamp, where users can review camps. Users can own 
 | [AUTH.md](./AUTH.md) | Tokens, revocation, and the login, refresh, Google, verification, and reset flows |
 | [ERROR_HANDLING.md](./ERROR_HANDLING.md) | Every error class, response, and error code |
 | [ADR.md](./ADR.md) | Decisions and the alternatives rejected, plus what's still open |
+| [ROADMAP.md](./ROADMAP.md) | The milestone index: one checkbox per milestone, each linking to its file |
+| [WORKFLOW.md](./WORKFLOW.md) | Branch strategy, the definition of done, the CI gate table, branch protection |
+| [milestones/](./milestones/) | One file per milestone: goal, acceptance criteria, criterion-to-test-file map, out-of-scope |
 
 # Tech Stack
 **Languages**: TypeScript, CSS
@@ -420,9 +423,12 @@ export type ErrorCode = typeof ERROR_CODES[number];
 // shared/src/api.ts
 export type FieldIssue   = { field: string; issue: string };
 export type ApiError     = { error: { code: ErrorCode; message: string; details?: FieldIssue[] } };
-export type Single<T>    = { data: T };
-export type Paginated<T> = { data: T[]; meta: { page: number; limit: number; total: number; totalPages: number } };
+export type Single<T>    = { message: string; data: T };
+export type Paginated<T> = { message: string; data: T[]; meta: { page: number; limit: number; total: number; totalPages: number } };
+export type HealthDTO    = { status: 'ok' };
 ```
+
+- **Success mirrors error.** Both carry a user-presentable `message`; success adds `data`, error adds `code`. The client branches on the HTTP status and, for errors, on `code` — never on `message`. The status is not repeated in the body, where it could disagree with the status line.
 
 - **`AppError` takes an `ErrorCode`,** so a mistyped code does not compile, and a `switch` on `error.code` in the SPA is checked for exhaustiveness — add a code and every unhandled switch fails. This is what makes "codes are never renamed without a version bump" (ERROR_HANDLING) enforceable.
 - **DTOs are not models.** `CampgroundDTO` has `_id: string` and `createdAt: string`; `ICampground` has `ObjectId` and `Date`. Keeping them apart stops the SPA from calling `.getTime()` on a value that is actually a string.

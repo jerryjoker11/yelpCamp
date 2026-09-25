@@ -70,6 +70,8 @@ The test list is transcribed, not invented. For each milestone:
 
 `PATCH /api/campgrounds/:id` yields its 200 plus `UNAUTHENTICATED`, `NOT_OWNER`, `CAMPGROUND_NOT_FOUND`, and `VALIDATION_FAILED` — five tests, named before one is written.
 
+The list is written once, as `it.todo` in the test file (§3.3). The milestone file maps each criterion to the file that covers it (§5.2) rather than repeating the names, which would give them two homes to drift between.
+
 ## 3.2 The loop
 
 Per test: **write it → run it → confirm it fails for the right reason → write the smallest code that passes → refactor → next.**
@@ -189,7 +191,7 @@ Three homes, no sentence written twice.
 |---|---|---|
 | `docs/ROADMAP.md` | The milestone index: ten checkboxes, each linking to its milestone file | Living |
 | `docs/WORKFLOW.md` | Branch strategy, the definition of done, the gate table, branch protection | Living |
-| `docs/milestones/M<N>-<slug>.md` | One milestone's goal, acceptance criteria, derived test list, and out-of-scope notes | Written before the milestone, frozen when it merges |
+| `docs/milestones/M<N>-<slug>.md` | One milestone's goal, acceptance criteria, criterion-to-test-file map, and out-of-scope notes | Written before the milestone, frozen when it merges |
 
 `ARCHITECTURE.md`'s documentation map gains rows for all three.
 
@@ -216,8 +218,13 @@ One sentence on what a user can do afterwards that they could not before.
 - **M3-AC-05** — A body with an unknown field is rejected, not silently trimmed.
 
 ## Test list
-Derived from API.md § Campgrounds and the error catalogue. Written as `it.todo` in
-`server/src/routes/campgrounds.test.ts` before implementation.
+Derived from API.md § Campgrounds and the error catalogue, and written as `it.todo`
+before implementation. Each test names its criterion ID; `npx vitest run -t 'M3-AC-01'`
+runs one criterion's tests.
+
+| Criterion | Covered by |
+|---|---|
+| M3-AC-01 – M3-AC-05 | `server/test/campgrounds.test.ts` |
 
 ## Out of scope
 What was deliberately deferred, and to which milestone.

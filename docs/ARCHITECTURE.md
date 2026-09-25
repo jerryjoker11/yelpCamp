@@ -12,7 +12,7 @@ Capstone Project known as YelpCamp, where users can review camps. Users can own 
 | [ADR.md](./ADR.md) | Decisions and the alternatives rejected, plus what's still open |
 | [ROADMAP.md](./ROADMAP.md) | The milestone index: one checkbox per milestone, each linking to its file |
 | [WORKFLOW.md](./WORKFLOW.md) | Branch strategy, the definition of done, the CI gate table, branch protection |
-| [milestones/](./milestones/) | One file per milestone: goal, acceptance criteria, derived test list, out-of-scope |
+| [milestones/](./milestones/) | One file per milestone: goal, acceptance criteria, criterion-to-test-file map, out-of-scope |
 
 # Tech Stack
 **Languages**: TypeScript, CSS

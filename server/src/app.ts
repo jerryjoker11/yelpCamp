@@ -1,5 +1,5 @@
 import express from 'express';
-import type { HealthDTO, Single } from '@yelpcamp/shared';
+import type { ApiError, HealthDTO, Single } from '@yelpcamp/shared';
 
 export type AppDeps = {
   isDbReady: () => boolean;
@@ -11,8 +11,13 @@ export const buildApp = (deps: AppDeps) => {
   const app = express();
 
   app.get('/api/health', (_req, res) => {
-    // isDbReady gates this route once the 503 path (M0-AC-02) is driven by its test.
-    void deps;
+    if (!deps.isDbReady()) {
+      const body: ApiError = {
+        error: { code: 'UPSTREAM_UNAVAILABLE', message: 'The database is unavailable.' },
+      };
+      res.status(503).json(body);
+      return;
+    }
     const body: Single<HealthDTO> = { message: 'The API is available.', data: { status: 'ok' } };
     res.json(body);
   });

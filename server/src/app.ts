@@ -22,5 +22,14 @@ export const buildApp = (deps: AppDeps) => {
     res.json(body);
   });
 
+  // Pathless and registered after every router, so it catches whatever none of
+  // them handled; without it Express answers with its default HTML 404.
+  app.use((_req, res) => {
+    const body: ApiError = {
+      error: { code: 'ROUTE_NOT_FOUND', message: 'The requested resource does not exist.' },
+    };
+    res.status(404).json(body);
+  });
+
   return app;
 };

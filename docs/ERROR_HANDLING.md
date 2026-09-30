@@ -110,7 +110,7 @@ All four must be translated explicitly. Left alone, Express's default handler re
 Three different cases:
 
 - **Unknown route** — a pathless `app.use(notFound)` registered after all routers throws `ROUTE_NOT_FOUND`. Without it, Express returns its default HTML 404. (Express 5 throws at startup on the Express 4 idiom `app.all('*')`.)
-- **Known route, missing document** — controller throws `AppError('CAMPGROUND_NOT_FOUND', 404)`, or the review or user equivalent.
+- **Known route, missing document** — controller throws `AppError('CAMPGROUND_NOT_FOUND', 404, 'That campground no longer exists.')`, or the review or user equivalent.
 - **Malformed id** — `/campgrounds/banana` fails the params schema and returns the resource's not-found code before any query runs. From the client's view it is a URL that does not resolve, so it is a 404, not a 400. A Mongoose `CastError` should therefore never occur; if one does, it means a route is missing its params schema, and it is still translated to 404 as a backstop.
 
 ## 6. Database and Mongoose errors (500, or translated)

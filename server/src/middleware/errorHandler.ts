@@ -1,11 +1,18 @@
 import type { ErrorRequestHandler } from 'express';
 import type { ApiError } from '@yelpcamp/shared';
+import { AppError } from '../utils/AppError.js';
 
 // err is unknown until narrowed, so whatever falls through every branch is a
 // bug and gets the generic 500: nothing about it reaches the client. Express
 // only treats a four-argument function as an error handler, hence _next.
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const errorHandler: ErrorRequestHandler = (err: unknown, _req, res, _next) => {
+  if (err instanceof AppError) {
+    const body: ApiError = { error: { code: err.code, message: err.message } };
+    res.status(err.status).json(body);
+    return;
+  }
+
   const requestId = String(res.locals.requestId);
   console.error({ requestId, err });
   const body: ApiError = {

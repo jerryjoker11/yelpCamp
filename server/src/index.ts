@@ -1,4 +1,7 @@
-// The Express 5 application. buildApp() arrives with GET /api/health later in
-// M0, together with the first failing test that asks for it; see
-// docs/specs/2026-09-22-roadmap-and-tdd-workflow-design.md §4.5 step 4.
-export {};
+import 'dotenv/config';
+import { parseEnv } from './config/env.js';
+
+// Parsed before anything listens: a bad environment stops the process here,
+// naming the variable, rather than failing on the first request that needs it.
+// The database connection and app.listen(env.PORT) follow this line later in M0.
+export const env = parseEnv(process.env);

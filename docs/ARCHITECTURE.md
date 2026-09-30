@@ -422,7 +422,7 @@ export type ErrorCode = typeof ERROR_CODES[number];
 
 // shared/src/api.ts
 export type FieldIssue   = { field: string; issue: string };
-export type ApiError     = { error: { code: ErrorCode; message: string; details?: FieldIssue[] } };
+export type ApiError     = { error: { code: ErrorCode; message: string; details?: FieldIssue[]; requestId?: string } };
 export type Single<T>    = { message: string; data: T };
 export type Paginated<T> = { message: string; data: T[]; meta: { page: number; limit: number; total: number; totalPages: number } };
 export type HealthDTO    = { status: 'ok' };

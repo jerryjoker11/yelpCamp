@@ -1,5 +1,7 @@
 import express from 'express';
 import type { ApiError, HealthDTO, Single } from '@yelpcamp/shared';
+import { errorHandler } from './middleware/errorHandler.js';
+import { requestId } from './middleware/requestId.js';
 
 export type AppDeps = {
   isDbReady: () => boolean;
@@ -9,6 +11,7 @@ export type AppDeps = {
 // Supertest with injected dependencies and no database.
 export const buildApp = (deps: AppDeps) => {
   const app = express();
+  app.use(requestId);
 
   app.get('/api/health', (_req, res) => {
     if (!deps.isDbReady()) {
@@ -30,6 +33,8 @@ export const buildApp = (deps: AppDeps) => {
     };
     res.status(404).json(body);
   });
+
+  app.use(errorHandler);
 
   return app;
 };

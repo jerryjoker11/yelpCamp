@@ -2,6 +2,11 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Model usage
+Opus 5.5 plans and reviews. Implementation goes to the `implementer`
+subagent (Sonnet 5, defined in `.claude/agents/implementer.md`), in chunks
+of at least one test file's worth of promoted tests, never one test at a time.
+
 ## Non-negotiables
 
 **Architecture**

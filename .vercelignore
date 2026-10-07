@@ -1,0 +1,7 @@
+# A CLI deploy uploads the working tree; keep secrets and local-only files out.
+.env
+.env.*
+!.env.example
+node_modules
+seeds
+**/dist

@@ -293,6 +293,7 @@ export type ReviewBody     = z.infer<typeof reviewBody>;
 yelpCamp/
 ├── package.json                 # npm workspaces: shared, server, client
 ├── tsconfig.base.json           # strict settings inherited by all three
+├── vercel.json                  # SPA build + the /api/* rewrite to Render (one origin, ADR-015)
 │
 ├── shared/                      # the compile-time contract — built first
 │   └── src/

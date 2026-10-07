@@ -315,7 +315,7 @@ yelpCamp/
 ├── server/                      # Express 5 API
 │   ├── src/
 │   │   ├── app.ts               # express app: middleware, routers, error handler
-│   │   ├── server.ts            # db connect → listen; fail fast if db is down
+│   │   ├── index.ts             # parse env (fail fast) → listen → db connect; a down db is a 503 from /api/health, not a dead process
 │   │   ├── config/
 │   │   │   └── env.ts           # Zod-parsed env, typed — see Configuration
 │   │   ├── types/

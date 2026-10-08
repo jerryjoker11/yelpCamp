@@ -1,0 +1,8 @@
+dist/
+coverage/
+package-lock.json
+seeds/
+
+# The docs are hand-written prose with hand-aligned tables. Prettier reflows
+# both, which is the diff noise this gate exists to prevent rather than cause.
+*.md

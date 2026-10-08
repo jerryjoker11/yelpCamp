@@ -28,7 +28,7 @@ describe('GET /api/health', () => {
 
 # Gates
 
-Every pull request into `develop` or `main` runs two jobs in `.github/workflows/ci.yml`. Both are required by branch protection, so a pull request cannot merge on red.
+Every pull request into `develop` or `main` runs two jobs: `verify` from `.github/workflows/ci.yml` and `e2e` from `.github/workflows/e2e.yml`. Both are required by a repository ruleset on `develop` and `main`, with no bypass, so a pull request cannot merge on red.
 
 | Job      | Gate               | Command                                     | Blocks on                                                                          |
 | -------- | ------------------ | ------------------------------------------- | ---------------------------------------------------------------------------------- |
@@ -43,6 +43,8 @@ Every pull request into `develop` or `main` runs two jobs in `.github/workflows/
 | `e2e`    | End-to-end         | `npx playwright test`                       | Whole-stack journeys in a real browser                                             |
 
 `e2e` runs on pull requests only, because waiting on browsers in the inner loop gets the loop bypassed. A failed run keeps its traces and screenshots as a `playwright-report` artifact for 14 days.
+
+**A required check must never be skipped.** GitHub counts a skipped check run as passing. `e2e` therefore lives in its own workflow triggered only by `pull_request`, rather than as a job in `ci.yml` guarded by `if:`: there, every push to `develop` produced a skipped `e2e` on the very commit a `develop` → `main` pull request then carried, and that pull request showed as mergeable before its real run finished. `verify` still runs on pushes to `develop` and `main`, as a check after merge.
 
 ## What `e2e` runs against
 

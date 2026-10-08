@@ -7,16 +7,16 @@ import { AppError } from '../utils/AppError.js';
 // only treats a four-argument function as an error handler, hence _next.
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const errorHandler: ErrorRequestHandler = (err: unknown, _req, res, _next) => {
-  if (err instanceof AppError) {
-    const body: ApiError = { error: { code: err.code, message: err.message } };
-    res.status(err.status).json(body);
-    return;
-  }
+    if (err instanceof AppError) {
+        const body: ApiError = { error: { code: err.code, message: err.message } };
+        res.status(err.status).json(body);
+        return;
+    }
 
-  const requestId = String(res.locals.requestId);
-  console.error({ requestId, err });
-  const body: ApiError = {
-    error: { code: 'INTERNAL', message: 'Something went wrong on our end.', requestId },
-  };
-  res.status(500).json(body);
+    const requestId = String(res.locals.requestId);
+    console.error({ requestId, err });
+    const body: ApiError = {
+        error: { code: 'INTERNAL', message: 'Something went wrong on our end.', requestId },
+    };
+    res.status(500).json(body);
 };

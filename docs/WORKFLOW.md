@@ -1,10 +1,10 @@
 # Workflow
 
-How work moves from a milestone file to `develop`. The reasoning behind it is in [the roadmap and TDD workflow design](./specs/2026-09-22-roadmap-and-tdd-workflow-design.md). The branch strategy, definition of done, gate table and branch protection sections are added as M0 builds them.
+How work moves from a milestone file to `develop`. The reasoning behind it is in [the roadmap and TDD workflow design](./specs/2026-09-22-roadmap-and-tdd-workflow-design.md). The branch strategy, definition of done and branch protection sections are added as M0 builds them.
 
 # Test names
 
-A test name lives in one place: its test file, where it is written first as an `it.todo`. The milestone file does not repeat names — it maps each criterion to the file that covers it — so the two cannot drift. Shape:
+A test name lives in one place: its test file, where it is written first as an `it.todo` — or, in a Playwright spec, as `test.fixme('name', () => {})`, since Playwright has no title-only placeholder. The milestone file does not repeat names — it maps each criterion to the file that covers it — so the two cannot drift. Shape:
 
 ```
 <outcome> when <condition> [<criterion ID>]
@@ -25,3 +25,39 @@ describe('GET /api/health', () => {
   );
 });
 ```
+
+# Gates
+
+Every pull request into `develop` or `main` runs two jobs in `.github/workflows/ci.yml`. Both are required by branch protection, so a pull request cannot merge on red.
+
+| Job      | Gate               | Command                                     | Blocks on                                                                          |
+| -------- | ------------------ | ------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `verify` | Build `shared`     | `npm run build:shared`                      | The contract the other workspaces import                                           |
+|          | Type check         | `npm run typecheck`                         | Contract drift, across all three workspaces plus `e2e/` and the Playwright config |
+|          | Lint               | `npm run lint`                              | Style, and floating promises ([ADR-003](./ADR.md#adr-003-express-5))               |
+|          | Format             | `npm run format:check`                      | Diff noise                                                                         |
+|          | Unit + integration | `npx vitest run`                            | Every `API.md` row and error code                                                  |
+|          | Production build   | `npm run build`                             | Bundling and env wiring that `--noEmit` cannot see                                 |
+|          | Secret scan        | `gitleaks`                                  | Committed credentials                                                              |
+|          | Pending tests      | grep for `.todo`, `.fixme` and `.only(`     | A milestone merging with its test list unfinished                                  |
+| `e2e`    | End-to-end         | `npx playwright test`                       | Whole-stack journeys in a real browser                                             |
+
+`e2e` runs on pull requests only, because waiting on browsers in the inner loop gets the loop bypassed. A failed run keeps its traces and screenshots as a `playwright-report` artifact for 14 days.
+
+## What `e2e` runs against
+
+**The pull request's own production build, on the runner, against a throwaway MongoDB** — not the deployed site.
+
+- The deployed site serves code merged earlier, so testing it would pass a pull request that breaks the page.
+- Merging is what deploys, so a gate that checks the deployment could only run after the merge it is meant to block.
+- From M1 the journeys create and delete campgrounds, which must never touch production data.
+
+MongoDB runs as a single-node replica set because review writes are transactional ([ADR-009](./ADR.md#adr-009-reviews-referenced-only-from-their-campground)), and it is pinned to MongoDB 7 because `mongo:8` refuses to start on Linux kernel 6.19+ (SERVER-121912). It needs no secret because it holds nothing worth keeping.
+
+**The deployment itself is checked by pointing the same spec at it**, which is how M0-AC-07 is proven "on the deployed site":
+
+```
+E2E_BASE_URL=https://yelpcamp-virid.vercel.app npx playwright test
+```
+
+That run reports rather than gates: by the time it can run, the deploy has already happened.

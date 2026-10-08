@@ -77,10 +77,6 @@ jobs:
     e2e:
         if: github.event_name == 'pull_request'
         runs-on: ubuntu-latest
-        env:
-            NODE_ENV: test
-            PORT: '3000'
-            MONGODB_URI: mongodb://localhost:27017/yelpcamp?replicaSet=rs0
         steps:
             - uses: actions/checkout@v5
 
@@ -120,8 +116,14 @@ jobs:
 
             - name: End-to-end tests
               # No E2E_BASE_URL, so playwright.config.ts starts the built API and
-              # vite preview on this runner.
+              # vite preview on this runner. The env is scoped to this step, not the
+              # job: a NODE_ENV other than production during the build makes Vite
+              # bundle React in development mode, whose StrictMode double-fires effects.
               run: npx playwright test
+              env:
+                  NODE_ENV: test
+                  PORT: '3000'
+                  MONGODB_URI: mongodb://localhost:27017/yelpcamp?replicaSet=rs0
 
             - name: Keep traces and screenshots
               if: failure()

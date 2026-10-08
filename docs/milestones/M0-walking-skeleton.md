@@ -1,5 +1,5 @@
 # M0 — Walking skeleton
-**Status:** In progress · **Branch:** `feature/m0-walking-skeleton`
+**Status:** Done · **Branch:** `feature/m0-walking-skeleton`
 
 ## Goal
 A visitor can open the deployed app and see that the API behind it is up and able to serve, and every later change reaches that deployment only through the same gates.

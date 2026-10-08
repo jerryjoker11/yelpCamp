@@ -2,6 +2,9 @@
 node_modules/
 
 # Build output
+shared/dist/
+server/dist/
+*.tsbuildinfo
 
 # Environment - .env.example stays tracked
 .env
@@ -28,3 +31,7 @@ npm-debug.log*
 .idea/
 .vscode/*
 !.vscode/extensions.json
+
+# Vercel CLI link state
+.vercel
+

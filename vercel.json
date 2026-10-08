@@ -1,0 +1,11 @@
+{
+    "$schema": "https://openapi.vercel.sh/vercel.json",
+    "buildCommand": "npm run build:shared && npm -w client run build",
+    "outputDirectory": "client/dist",
+    "rewrites": [
+        {
+            "source": "/api/:path*",
+            "destination": "https://yelpcamp-zrs3.onrender.com/api/:path*"
+        }
+    ]
+}

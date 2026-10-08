@@ -293,7 +293,11 @@ export type ReviewBody     = z.infer<typeof reviewBody>;
 yelpCamp/
 ├── package.json                 # npm workspaces: shared, server, client
 ├── tsconfig.base.json           # strict settings inherited by all three
+├── tsconfig.json                # typechecks e2e/ and the Playwright config; lets ESLint parse them
+├── playwright.config.ts         # local production build by default; E2E_BASE_URL targets a deployment
 ├── vercel.json                  # SPA build + the /api/* rewrite to Render (one origin, ADR-015)
+│
+├── e2e/                         # Playwright specs — whole-stack journeys in a real browser
 │
 ├── shared/                      # the compile-time contract — built first
 │   └── src/
